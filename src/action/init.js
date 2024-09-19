@@ -7,6 +7,12 @@ import {PersonalFile} from '../entity/personal-file';
 import {decode2d} from '../utils/decoder';
 import {start} from './start';
 
+/**
+ * @function
+ * @name init
+ * 
+ * Initializes game
+ */
 export function init() {
 	for(let key in game.letters) {
         game.letters[key] = decode2d(game.letters[key]);
@@ -67,12 +73,14 @@ export function init() {
 	}
 
 	//bind suspect file
-	suspectFile.on('hide', () => setTimeout(board.interactive = 1, 100));
+	suspectFile.on('hide', () => {
+		game.mouse.down = 0;
+		board.interactive = 1;
+	});
 	//bind suspect file buttons
 	arrestBtn.on('hover', () => game.cursor('pointer'));
 	arrestBtn.on('click', () => {
 		suspectFile.person.arrested = 1;
-		suspectFile.person.interactive = 0;
 		game.data.arrested = suspectFile.person;
 		suspectFile.hide();
 	});
@@ -81,7 +89,6 @@ export function init() {
 	protectBtn.on('hover', () => game.cursor('pointer'));
 	protectBtn.on('click', () => {
 		suspectFile.person.protected = 1;
-		suspectFile.person.interactive = 0;
 		game.data.protected = suspectFile.person;
 		suspectFile.hide();
 	});
@@ -89,9 +96,15 @@ export function init() {
 	suspectFile.add(protectBtn);
 
 	//bind killer file
-	killerFile.on('hide', () => setTimeout(board.interactive = 1, 100));
+	killerFile.on('hide', () => {
+		game.mouse.down = 0;
+		board.interactive = 1;
+	});
 	//bind summary
-	summary.on('hide', () => setTimeout(game.scenes.menu.show(), 100));
+	summary.on('hide', () => {
+		game.mouse.down = 0;
+		game.scenes.menu.show()
+	});
 
 	game.data.music = 0;
 }
